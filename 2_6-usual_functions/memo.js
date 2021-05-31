@@ -10,4 +10,13 @@
  * @param {Function} func 需要执行的函数
  * @param {Function} hasher 散列函数
  */
- export default function memo(func, hasher) {}
+ export default function memo(func, hasher) {
+  const mimoize = function (key) {
+    const cache = mimoize.cache;
+    const address = '' + (hasher ? hasher.apply(this, argument) : key);
+    if (!cache[address]) cache[address] = func.apply(this, arguments)
+    return cache[address];
+  }
+  mimoize.cache = {};
+  return mimoize;
+ }
