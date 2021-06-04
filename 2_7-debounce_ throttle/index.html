@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    #content {
+      width: 200px;
+      height: 200px;
+      line-height: 200px;
+      background-color: #ccc;
+      margin: 0 auto;
+      font-size: 60px;
+      text-align: center;
+      color: #000;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="content"></div>
+  <script>
+    let num = 1;
+    let oDiv = document.getElementById('content');
+    let changNum = function () {
+      oDiv.innerHTML = num++;
+    }
+    // oDiv.onmousemove = changNum;
+
+    const debounce = (fn, delay) => {
+      let timer = null;
+      // return function () {
+      return function (...args) {
+        if (timer) clearTimeout(timer);
+        // timer = setTimeout(function () {
+          timer = setTimeout( () => { // 改为箭头函数后 this 就指向了 div 这是为什么
+          // fn();
+          fn(...args);
+          console.log(this);
+        }, delay)
+      }
+    }
+
+    oDiv.onmousemove = debounce(changNum, 500);
+
+  </script>
+</body>
+</html>

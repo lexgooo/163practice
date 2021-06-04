@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .div1 {
+      width: 500px;
+      height: 300px;
+      line-height: 300px;
+      margin: auto;
+      text-align: center;
+    }
+    button {
+      width: 100px;
+      height: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="div1">
+    <button id="debounceBtn">防抖按钮</button>
+    <button id="throttleBtn">节流按钮</button>
+  </div>
+
+  <script>
+    let fn = () => {
+      console.log('我被触发了');
+    }
+
+    const deBounce = (fn, delay) => {
+      let timer = null;
+      return function (...args) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn(...args);
+        }, delay)
+      }
+    }
+
+    const throttle = (fn, delay) => {
+      let flag = true;
+      return function (...args) {
+        if (!flag) return;
+        flag = false;
+        setTimeout(() => {
+          fn(...args);
+          flag = true;
+        }, delay)
+      }
+    }
+
+    document.querySelector('#debounceBtn').addEventListener('click', deBounce(fn, 500))
+    document.querySelector('#throttleBtn').addEventListener('click', throttle(fn, 500))
+  </script>
+</body>
+</html>

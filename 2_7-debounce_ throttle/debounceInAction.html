@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text">
+  <script>
+    const debounce = (fn, delay) => {
+      let timer = null;
+      return function (...args) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          fn(...args);
+        }, delay)
+      }
+    }
+    const oInput = document.getElementsByTagName('input')[0];
+    const ajax = content => {
+      const message = content;
+      const json = { message };
+      console.log(JSON.stringify(json))
+    }
+    const doAjax = debounce(ajax, 2000);
+
+    // 不使用防抖
+    // oInput.addEventListener('keyup', e => {
+    //   console.log(e.target.value);
+    // })
+
+    // 使用防抖
+    oInput.addEventListener('keyup', e => {
+      doAjax(e.target.value);
+    })
+
+  </script>
+</body>
+</html>
