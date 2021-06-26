@@ -15,9 +15,30 @@
  *
  * @param  {Array[Function]} funcs
  */
- export default function Compose(...funcs) {
+//  export default function Compose(...funcs) {
+//   if (funcs.length === 0) {
+//     return arg => arg;
+//   }
+//   return funcs.reduce((a, b) => (...args) => a(b(...args)));
+// }
+
+function Compose(...funcs) {
   if (funcs.length === 0) {
     return arg => arg;
   }
-  return funcs.reduce((a, b) => (...args) => a(b(...args)));
+  return funcs.reduce((a, b, index) => {
+    // console.log(a.toString(), ',', b.toString(), ', 索引', index)
+    // console.log(a, a(b))
+    return (...args) => {
+      // console.log(a(b(...args)))
+      a(b(...args))
+    }
+  });
 }
+
+// let add = n => n + 3;
+// let multiple = n => n * 2;
+// let minus = n => n - 1;
+
+// console.log(Compose(add, multiple, minus).toString())
+// console.log(Compose(1, 2, 3).toString())

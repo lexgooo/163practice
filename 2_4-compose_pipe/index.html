@@ -7,5 +7,18 @@
 
   <body>
     <div id="app"></div>
+    <script src="./src/compose.js"></script>
+    <script>
+      let add = n => n + 3;
+      let multiple = n => n * 2;
+      let minus = n => n - 1;
+      console.dir(Compose(add, multiple))
+      // console.dir(Compose(1, 2, 3))
+      const a = 1 + 1;
+      const b = 2 + 3;
+      const c = 3 + 5;
+      console.dir(Compose(1 + 1, 2 + 3, 2 + 3))
+      console.dir(add)
+    </script>
   </body>
 </html>
