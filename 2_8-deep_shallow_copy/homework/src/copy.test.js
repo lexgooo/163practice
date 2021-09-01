@@ -8,29 +8,29 @@ const x = {
   }
 };
 
-// const ar = [1, 2, 3];
+const ar = [1, 2, 3];
 
-// const y = {
-//   a: 'z',
-//   [Symbol('z')]: 'd',
-//   ar
-// };
+const y = {
+  a: 'z',
+  [Symbol('z')]: 'd',
+  ar
+};
 
-// const z = {
-//   a: 'z',
-//   z: () => 'd',
-//   y
-// };
+const z = {
+  a: 'z',
+  z: () => 'd',
+  y
+};
 
-// var r = {
-//   a: 'z',
-//   z
-// };
+var r = {
+  a: 'z',
+  z
+};
 
-// r.r = r;
+r.r = r;
 
-test('should deepcopy right', () => {
+test('should deeply copy right', () => {
   // expect(sum(1, 2)).toBe(3);
-  expect(deepCopy(x)).toBe(x);
-  // expect(deepCopy(r)).toBe(r);
+  expect(deepCopy(x)).toStrictEqual(x);
+  expect(deepCopy(r)).toStrictEqual(r);
 })

@@ -25,3 +25,4 @@ test("memo fibnacci(1) to equal 1", () => {
 
 test("memo fibnacci(2) to equal 2", () => {
   expect(memo(fibnacci)(2)).toBe(2);
+});

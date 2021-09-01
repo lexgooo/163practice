@@ -12,20 +12,35 @@ const deepCopyJson = source => {
  * 并且保证copy.test.js中的单元测试顺利通过。
  */
 const deepCopy = source => {
-  let rst = Array.isArray(source) ? [] : {};
-  if (source && typeof source === 'object') {
-    for (let key in source) {
-      if (source.hasOwnProperty(key)) {
-        // console.log(key)
-        if (source[key] && typeof source[key] === 'object') {
-          rst[key] = deepCopy(source[key])
-        } else {
-          rst[key] = source[key]
-        }
-      }
+  const baseStack = []
+  const targetStack = []
+  const _clone = base => {
+    if (typeof base !== 'object' || base == null) {
+      return base
     }
+
+    let target = {}
+
+    if (Array.isArray(base)) {
+      target = []
+    }
+
+    const index = baseStack.indexOf(base)
+
+    if (index > -1) {
+      return targetStack[index]
+    }
+
+    baseStack.push(base)
+    targetStack.push(target)
+
+    for(let i in base) {
+      target[i] = _clone(base[i])
+    }
+
+    return target
   }
-  return rst
+  return _clone(source)
 };
 
 const sum = (a, b) => {
