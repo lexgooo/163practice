@@ -29,71 +29,63 @@ class Commitment {
 
   _onFulfilled (onFulfilled, promise2, resolve, reject, stack = false) {
     const that = this
-    const fn = result => {
-      setTimeout(() => {
-        try {
-          if (typeof onFulfilled !== 'function') {
-            resolve(result)
-          } else {
-            let x = null
-            x = onFulfilled(result)
-            return that._Resolve(promise2, x, resolve, reject)
-          }
-        } catch (err) {
-          reject(err)
-        }
-      }, 0)
+    try {
+      if (typeof onFulfilled !== 'function') {
+        resolve(that.result)
+      } else {
+        let x = null
+        x = onFulfilled(that.result)
+        // console.log('_onFulfilled 上的 promise2', promise2, x.status)
+        return that._Resolve(promise2, x, resolve, reject)
+      }
+    } catch (err) {
+      reject(err)
     }
-    return stack ? fn : fn(that.result)
   }
 
   _onRejected (onRejected, promise2, resolve, reject, stack = false) {
     const that = this
-    const fn = result => {
-      setTimeout(() => {
-        try {
-          if (typeof onRejected !== 'function') {
-              reject(result)
-          } else {
-              let x = null
-              x = onRejected(result)
-              return that._Resolve(promise2, x, resolve, reject)
-          }
-        } catch (err) {
-          reject(err)
-        }
-      }, 0)
+    try {
+      if (typeof onRejected !== 'function') {
+          reject(that.result)
+      } else {
+          let x = null
+          x = onRejected(that.result)
+          // console.log('_onRejected 上的 promise2', promise2, x.status)
+          return that._Resolve(promise2, x, resolve, reject)
+      }
+    } catch (err) {
+      reject(err)
     }
-    return stack ? fn : fn(that.result)
   }
 
   then (onFulfilled, onRejected) {
     const that = this
-    let promise2 = null
-    const status = this.status
+    const status = that.status
+    const promise2 = new Commitment((resolve, reject) => {
       switch (status) {
         case Commitment.FULFILLED:
-          promise2 = new Commitment((resolve, reject) => {
+          setTimeout(() => {
             that._onFulfilled(onFulfilled, promise2, resolve, reject)
-          })
+          }, 0)
           break
         case Commitment.REJECTED:
-          promise2 = new Commitment((resolve, reject) => {
+          setTimeout(() => {
             that._onRejected(onRejected, promise2, resolve, reject)
-          })
+          }, 0)
           break
         case Commitment.PADDING:
-          promise2 = new Commitment((resolve, reject) => {
-            that.resolveCallbacks.push(that._onFulfilled(onFulfilled, promise2, resolve, reject, true))
-            that.rejectCallbacks.push(that._onRejected(onRejected, promise2, resolve, reject, true))
-          })
+          that.resolveCallbacks.push(() => setTimeout(() => that._onFulfilled(onFulfilled, promise2, resolve, reject, true), 0))
+          that.rejectCallbacks.push(() => setTimeout(() => that._onRejected(onRejected, promise2, resolve, reject, true), 0))
           break
       }
+    })
     return promise2
   }
 
   _Resolve (promise, x, resolve, reject) {
     const that = this
+    // console.log('promise', promise, 'x', x)
     if (promise === x) {
       return reject(new TypeError('promise2 不能与 x 为同一个对象！'))
     }
@@ -103,6 +95,7 @@ class Commitment {
       })
     }
     if (typeof x === 'object' || typeof x === 'function') {
+      if (x === null) resolve(x)
       // x 为对象或函数
       let then = null
       try {
@@ -117,6 +110,7 @@ class Commitment {
           then.call(x, y => {
             if (called) return
             called = true
+            console.log('添加测试数据', y)
             that._Resolve(promise, y, resolve, reject)
           }, r => {
             if (called) return
