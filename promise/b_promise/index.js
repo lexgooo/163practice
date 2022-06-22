@@ -92,7 +92,7 @@ class Commitment {
     if (x instanceof Commitment) {
       x.then(y => {
         return that._Resolve(promise, y, resolve, reject)
-      })
+      }, reject)
     }
     if (typeof x === 'object' || typeof x === 'function') {
       if (x === null) resolve(x)
@@ -101,7 +101,7 @@ class Commitment {
       try {
         then = x.then
       } catch (err) {
-        reject(err)
+        return reject(err)
       }
       if (typeof then === 'function') {
         // 如果 then 是函数
@@ -118,6 +118,7 @@ class Commitment {
             reject(r)
           })
         } catch (err) {
+          if (called) return
           reject(err)
         }
       } else {
@@ -131,18 +132,6 @@ class Commitment {
   }
 }
 
-const promise = new Commitment((resolve, reject) => {
-  setTimeout(() => {
-    console.log('延迟等待结束')
-    resolve(200)
-  }, 1000)
-})
-// 
-const promise1 = promise.then()
-const promise2 = promise1.then()
-promise2.then(res => {
-  console.log('promise3中结果', res)
-})
 
 Commitment.deferred = function () {
   const res = {}
